@@ -2,18 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://aoo.fan/2025/07/05/0705/</loc>
+    <loc>http://aoo.fan/2025/07/29/loverrule/</loc>
     
-    <lastmod>2025-07-05</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://aoo.fan/2025/07/05/20250426/</loc>
-    
-    <lastmod>2025-07-05</lastmod>
+    <lastmod>2025-07-29</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -22,7 +13,16 @@
   <url>
     <loc>http://aoo.fan/2025/04/25/welcome/</loc>
     
-    <lastmod>2025-04-25</lastmod>
+    <lastmod>2025-07-29</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://aoo.fan/2025/07/05/0705/</loc>
+    
+    <lastmod>2025-07-05</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -40,7 +40,7 @@
 
   <url>
     <loc>http://aoo.fan/</loc>
-    <lastmod>2025-07-05</lastmod>
+    <lastmod>2025-07-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
