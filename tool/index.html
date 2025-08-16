@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>文字转图片（Swiftie-G制作 代码语言：HTML+JS）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;padding:20px}
+.container{max-width:800px;margin:0 auto;background:#fff;border-radius:10px;padding:30px;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+h1{text-align:center;color:#333;margin-bottom:20px}
+label{font-weight:bold;color:#555;margin-right:6px}
+.control-row{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;margin-bottom:15px}
+input[type=number]{width:70px;padding:4px 6px}
+input[type=range]{width:120px}
+input[type=color]{width:40px;height:26px;border:none;cursor:pointer}
+select{padding:4px 6px;font-size:14px}
+.preview-section{text-align:center;margin:15px 0}
+canvas{border:1px solid #ddd;background:#fff}
+.button-section{text-align:center;margin-top:15px}
+.button-section button{margin:0 5px;padding:10px 24px;font-size:15px;border:none;border-radius:5px;background:#007bff;color:#fff;cursor:pointer}
+.button-section button:disabled{background:#ccc;cursor:not-allowed}
+.success-message{color:#28a745;margin-top:10px;display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>文字转图片（Swiftie-G制作 代码语言：HTML+JS）</h1>
+
+  <!-- 控制面板 -->
+  <div class="control-row">
+    <label>文字：</label>
+    <input type="text" id="textInput" placeholder="请输入文字..." maxlength="100" style="flex:1;min-width:200px">
+  </div>
+  <div class="control-row">
+    <label>字体大小：</label>
+    <input type="range" id="fontSizeRange" min="10" max="120" value="48">
+    <span id="fontSizeVal">48</span>px
+
+    <label>画布宽：</label>
+    <input type="number" id="canvasW" value="400" min="100" max="1000">
+
+    <label>画布高：</label>
+    <input type="number" id="canvasH" value="200" min="100" max="600">
+
+    <label>背景色：</label>
+    <input type="color" id="bgColor" value="#ffffff">
+
+    <label>字体：</label>
+    <select id="fontFamily">
+      <option value="sans-serif" selected>系统默认</option>
+      <option value="serif">衬线体</option>
+      <option value="monospace">等宽体</option>
+    </select>
+  </div>
+
+  <!-- 预览 -->
+  <div class="preview-section">
+    <canvas id="previewCanvas" width="400" height="200"></canvas>
+  </div>
+
+  <!-- 按钮 -->
+  <div class="button-section">
+    <button id="copyBtn" disabled>复制到剪贴板</button>
+    <button id="saveBtn"  disabled>保存图片</button>
+    <div class="success-message" id="successMessage">已复制到剪贴板！</div>
+  </div>
+</div>
+
+<script>
+/* ---------- 获取 DOM ---------- */
+const textInp   = document.getElementById('textInput');
+const fontSzR   = document.getElementById('fontSizeRange');
+const fontSzV   = document.getElementById('fontSizeVal');
+const canvasW   = document.getElementById('canvasW');
+const canvasH   = document.getElementById('canvasH');
+const bgColor   = document.getElementById('bgColor');
+const fontFam   = document.getElementById('fontFamily');
+const canvas    = document.getElementById('previewCanvas');
+const ctx       = canvas.getContext('2d');
+const copyBtn   = document.getElementById('copyBtn');
+const saveBtn   = document.getElementById('saveBtn');
+const succMsg   = document.getElementById('successMessage');
+
+/* ---------- 统一渲染 ---------- */
+function draw(){
+  const W = +canvasW.value;
+  const H = +canvasH.value;
+  canvas.width  = W;
+  canvas.height = H;
+
+  const text = textInp.value || '预览文字';
+  const fontSize = +fontSzR.value;
+  const family = fontFam.value;
+
+  ctx.fillStyle = bgColor.value;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.font = `${fontSize}px ${family}`;
+  ctx.fillStyle = '#000';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  /* 简单折行 */
+  const lines = wrapText(ctx, text, W-20, 99); // 最多99行
+  const totalH = lines.length * fontSize;
+  const startY = (H - totalH)/2 + fontSize/2;
+  lines.forEach((l,i)=>ctx.fillText(l, W/2, startY + i*fontSize));
+
+  const hasText = textInp.value.trim()!=='';
+  copyBtn.disabled = !hasText;
+  saveBtn.disabled = !hasText;
+}
+
+/* ---------- 折行 ---------- */
+function wrapText(ctx, txt, maxW){
+  const words = [...txt];
+  const lines = [];
+  let cur = '';
+  for(const ch of words){
+    if(ctx.measureText(cur+ch).width <= maxW){
+      cur += ch;
+    }else{
+      lines.push(cur);
+      cur = ch;
+    }
+  }
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+/* ---------- 事件监听 ---------- */
+[textInp, fontSzR, canvasW, canvasH, bgColor, fontFam]
+  .forEach(el=>el.addEventListener('input',draw));
+fontSzR.addEventListener('input',()=>fontSzV.textContent=fontSzR.value);
+
+/* ---------- 复制 ---------- */
+copyBtn.addEventListener('click', async ()=>{
+  try{
+    const blob = await new Promise(res=>canvas.toBlob(res));
+    await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+    succMsg.style.display='block';
+    setTimeout(()=>succMsg.style.display='none',2000);
+  }catch(e){alert('复制失败：'+e.message);}
+});
+
+/* ---------- 保存 ---------- */
+saveBtn.addEventListener('click',()=>{
+  canvas.toBlob(blob=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (textInp.value.trim()||'文字图片')+'.png';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+});
+
+/* ---------- 初始化 ---------- */
+draw();
+</script>
+</body>
+<!-- 页面信息 -->
+<div class="footer" style="text-align:center;margin-top:20px;font-size:13px;color:#666;">
+  作者：Swiftie-G | 代码语言：HTML
+</div>
+</html>
