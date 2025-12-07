@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>吃瓜专区</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            overflow: hidden;
+        }
+        .click-btn {
+            width: 40vw;
+            height: 40vw;
+            border-radius: 50%;
+            background: linear-gradient(120deg, #ff7e5f, #feb47b);
+            box-shadow: 0 8px 20px rgba(255, 126, 95, 0.4);
+            color: #fff;
+            font-size: 5vw;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            padding: 0 2vw;
+        }
+        .click-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 4px 15px rgba(255, 126, 95, 0.3);
+            background: linear-gradient(120deg, #ff6b4d, #fea868);
+        }
+        .img-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            z-index: 999;
+        }
+        .full-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="click-btn" id="btn">
+        内陆男演员<br>在线吃瓜
+    </div>
+
+    <div class="img-container" id="imgBox">
+        <!-- 已替换为你提供的照片地址 -->
+        <img src="https://ts4.tc.mm.bing.net/th/id/OIP-C.Kr6EVw73CeldDQr-rPvKfwAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="吃瓜图片" class="full-img" id="fullImg">
+    </div>
+
+    <script>
+        const btn = document.getElementById('btn');
+        const imgBox = document.getElementById('imgBox');
+        const fullImg = document.getElementById('fullImg');
+
+        // 点击按钮显示图片
+        btn.addEventListener('click', () => {
+            btn.style.display = 'none';
+            imgBox.style.display = 'block';
+        });
+
+        // 点击图片返回
+        fullImg.addEventListener('click', () => {
+            imgBox.style.display = 'none';
+            btn.style.display = 'flex';
+        });
+
+        // 移动端触摸优化
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            btn.style.transform = 'scale(0.95)';
+        });
+        btn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            btn.style.transform = 'scale(1)';
+            btn.style.display = 'none';
+            imgBox.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
